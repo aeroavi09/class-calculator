@@ -29,3 +29,16 @@ body {
     background-color: #656577;
     color: #CAD4DF;
 }
+#creditsButton {
+    background-color: #CAD4DF;
+    color: #3B373B;
+    padding: 10px 20px;
+    font-size: 16px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+#creditsButton:hover {
+    background-color: #656577;
+    color: #CAD4DF;
+}
