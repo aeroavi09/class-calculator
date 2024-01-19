@@ -1,16 +1,18 @@
+// Variable to keep track of the number of courses
 var numberOfCourses = 0;
-
+// Function called when web page id loaded
 function webLoaded() {
 
     console.log("step 1");
     console.log("localstorage length : " + localStorage.length);
     numberOfCourses = localStorage.length
 
+    // Loop through stored courses in local storage
     for (let i = 0; i < localStorage.length; i++) {
 
 
         console.log("I am in the loop");
-
+        // Retrive course information from local storage
         var course = localStorage.getItem(i + 1);
         console.log("course : " + course);
         console.log("JSON.parse(course) : " + JSON.stringify(JSON.parse(course)));
@@ -24,7 +26,7 @@ function webLoaded() {
         const newOptionC = document.createElement("option");
         const newOptionD = document.createElement("option");
         const newOptionF = document.createElement("option");
-        // Assign values and innerHTML's
+        // Assign values and innerHTML's for grade options
         newOptionA.value = "A";
         newOptionA.innerHTML = "A";
         newOptionB.value = "B";
@@ -35,18 +37,18 @@ function webLoaded() {
         newOptionD.innerHTML = "D";
         newOptionF.value = "F";
         newOptionF.innerHTML = "F";
-        // Create new options for type
+        // Create new options for course types
         const newOptionNormal = document.createElement("option");
         const newOptionAccelerated = document.createElement("option");
         const newOptionHonorsAP = document.createElement("option");
-        //assign values and innerHTML's
+        //assign values and innerHTML's for type options
         newOptionNormal.value = "Normal";
         newOptionNormal.innerHTML = "Normal";
         newOptionAccelerated.value = "Accelerated";
         newOptionAccelerated.innerHTML = "Accelerated";
         newOptionHonorsAP.value = "Honors/AP";
         newOptionHonorsAP.innerHTML = "Honors/AP";
-
+        // set up structire of the new course div
         newDiv.className = "addedCourses";
         newDiv.innerHTML = `
          <center>
@@ -68,9 +70,9 @@ function webLoaded() {
              <br>
              <button class="deleteButton" onclick="deleteCourse(${parsedjson.courseNumber})" style="font-size:30px;">x</button>
          </center>`;
-
+        // append the new div to the holder element
         document.getElementById('holder').appendChild(newDiv);
-
+        // switch statement to set the selected grade option based on stored data
         switch (parsedjson.courseGrade) {
             case "A":
                 newOptionA.selected = true;
@@ -90,7 +92,7 @@ function webLoaded() {
 
         }
 
-
+        // append grade options to the grade select element
         const gradeElement = document.getElementById("grade" + parsedjson.courseNumber.toString());
         if (gradeElement) {
             gradeElement.appendChild(newOptionA);
@@ -101,7 +103,7 @@ function webLoaded() {
         } else {
             console.error("Element with ID 'grade" + parsedjson.courseNumber.toString() + "' not found.");
         }
-
+        // switch statement to the selected type oftion based on stored data
         switch (parsedjson.courseType) {
             case "Normal":
                 newOptionNormal.selected = true;
@@ -113,7 +115,7 @@ function webLoaded() {
                 newOptionHonorsAP.selected = true;
                 break;
         }
-
+        // append type options to the type select element
         const typeElement = document.getElementById("type" + parsedjson.courseNumber.toString());
         if (typeElement) {
             typeElement.appendChild(newOptionNormal);
@@ -125,9 +127,11 @@ function webLoaded() {
 
 
     }
+    //update gpa after load courses
     updateGPA()
 }
 
+// function to edit the grades or type of course
 function editValue(type, number, value)
 {
     console.log("edited value");
@@ -149,15 +153,15 @@ function editValue(type, number, value)
 }
 
 
-
+// function to create a new course div
 function createDiv() {
-
+    // increase the number of courses
     numberOfCourses += 1;
     var courseNumber = numberOfCourses;
     // Create a new div element
     const newDiv = document.createElement("div");
 
-    // Set some attributes for the div (you can customize these)
+    // Set some attributes for the div
     newDiv.className = "addedCourses";
     newDiv.innerHTML = `
     <center>
@@ -189,55 +193,49 @@ function createDiv() {
 
     // Append the new div to the body
     document.getElementById('holder').appendChild(newDiv);
-
+    // create a new course object with default values
     var course = {
         "courseGrade": document.getElementById('grade' + courseNumber.toString()).value,
         "courseType": document.getElementById('type' + courseNumber.toString()).value,
         "courseNumber": courseNumber,
         "courseName": document.getElementById('course' + courseNumber.toString()).value 
     }
-
+    
     console.log("New Course : " + JSON.stringify(course));
     console.log("courseNumber : " + courseNumber);
-
+    // store the new course in local storage
     localStorage.setItem(courseNumber, JSON.stringify(course))
-
+    // update gpa after adding a new course
     updateGPA();
 }
 
+//function to update the name of a course
 function updateName(number) {
     var courseName = document.getElementById(`course${number}`).value;
     var changedItem = JSON.parse(localStorage.getItem(number));
     changedItem.courseName = courseName;
     localStorage.setItem(number, JSON.stringify(changedItem));
 }
-
+// functiojnto delete a course
 function deleteCourse(number) {
     
     // Decrease numberOfCourses after deleting a course
     numberOfCourses -= 1;
 
-
-
-    // Remove the course div
+    // Remove the course div from the DOM 
     const courseDiv = document.getElementById(`course${number}`).parentNode.parentNode;
     courseDiv.parentNode.removeChild(courseDiv);
 
-
+    // reorder remaining courses in local storage
     if (number != localStorage.length){
         for (let i = number + 1; i <= localStorage.length; i++) {
             var changedItem = JSON.parse(localStorage.getItem(i));
             localStorage.setItem(i - 1, JSON.stringify(changedItem));
         }
     }
-
+    // delete from localStorage
     localStorage.removeItem(localStorage.length);
-    // Reorder the remaining courses
-    for (let i = 1; i <= localStorage.length; i++) {
-
-    }
-
-
+    
     // Update GPA after reordering and deleting a course
     updateGPA();
 }
@@ -258,7 +256,7 @@ function updateGPA() {
         const gradeNumLabel = document.getElementById(`gradeNum${item.courseNumber}`);
 
         let courseGPA = 0.0;
-
+        // calculate GPA based on course type and grade
         if (item.courseType === 'Honors/AP') {
             courseGPA = (item.courseGrade === 'A' ? 5.0 : (item.courseGrade === 'B' ? 4.0 : (item.courseGrade === 'C' ? 3.0 : (item.courseGrade === 'D' ? 1.0 : 0.0))));
         } else if (item.courseType === 'Accelerated') {
@@ -266,15 +264,15 @@ function updateGPA() {
         } else {
             courseGPA = (item.courseGrade === 'A' ? 4.0 : (item.courseGrade === 'B' ? 3.0 : (item.courseGrade === 'C' ? 2.0 : (item.courseGrade === 'D' ? 1.0 : 0.0))));
         }
-
+        // display the calculated GPA for the course
         gradeNumLabel.innerText = courseGPA.toFixed(2);
     }
 }
 
-
+// calculation of weighted GOA
 function calculateWeightedGPA() {
     let weightedGPA = 0.0;
-
+    // calculate total weighted gpa based on each course
     for (let i = 1; i <= numberOfCourses; i++) {
         console.log(i);
         var item = JSON.parse(localStorage.getItem(i));
@@ -287,24 +285,24 @@ function calculateWeightedGPA() {
             weightedGPA += (item.courseGrade === 'A' ? 4.0 : (item.courseGrade === 'B' ? 3.0 : (item.courseGrade === 'C' ? 2.0 : (item.courseGrade === 'D' ? 1.0 : 0.0))));
         }
     }
-
+    // calculate average weighted GPA
     if (numberOfCourses > 0) {
         weightedGPA /= numberOfCourses;
     }
 
     return weightedGPA.toFixed(2);
 }
-
+// function to calculate the unweighted GPA
 function calculateUnweightedGPA() {
     
     let unweightedGPA = 0.0;
-
+    // calculate the total unweighted GPA based on each course
     for (let i = 1; i <= numberOfCourses; i++) {
         var item = JSON.parse(localStorage.getItem(i));
 
         unweightedGPA += (item.courseGrade === 'A' ? 4.0 : (item.courseGrade === 'B' ? 3.0 : (item.courseGrade === 'C' ? 2.0 : (item.courseGrade === 'D' ? 1.0 : 0.0))));
     }
-
+    // calculate average unweighted GPA
     if (numberOfCourses > 0) {
         unweightedGPA /= numberOfCourses;
     }
