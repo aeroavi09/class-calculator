@@ -216,7 +216,7 @@ function updateName(number) {
     changedItem.courseName = courseName;
     localStorage.setItem(number, JSON.stringify(changedItem));
 }
-// functiojnto delete a course
+// function to delete a course
 function deleteCourse(number) {
     
     // Decrease numberOfCourses after deleting a course
