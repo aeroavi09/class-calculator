@@ -48,7 +48,7 @@ function webLoaded() {
         newOptionAccelerated.innerHTML = "Accelerated";
         newOptionHonorsAP.value = "Honors/AP";
         newOptionHonorsAP.innerHTML = "Honors/AP";
-        // set up structire of the new course div
+        // set up structure of the new course div
         newDiv.className = "addedCourses";
         newDiv.innerHTML = `
          <center>
