@@ -269,7 +269,7 @@ function updateGPA() {
     }
 }
 
-// calculation of weighted GOA
+// calculation of weighted GPA
 function calculateWeightedGPA() {
     let weightedGPA = 0.0;
     // calculate total weighted gpa based on each course
